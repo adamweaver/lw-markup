@@ -1,0 +1,10 @@
+(require "parsergen")
+
+(define-lw-system lw-markup ()
+  (:system "lw-ppcre")
+  (:file "css" :depends-on "xml")
+  (:file "html" :depends-on "package")
+  (:file "markdown" :depends-on "package")
+  (:file "package")
+  (:file "rtf" :depends-on "package")
+  (:file "xml" :depends-on "package"))
