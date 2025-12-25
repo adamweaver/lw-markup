@@ -2,6 +2,7 @@
 
 (define-lw-system lw-markup ()
   (:system "lw-ppcre")
+  (:system "lw-utils")
   (:file "css" :depends-on "xml")
   (:file "html" :depends-on "package")
   (:file "markdown" :depends-on "package")
