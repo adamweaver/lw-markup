@@ -11,10 +11,10 @@
 ;;; * Oh and #\: is a valid token in a tag name or attribute, not a namespace delimiter
 
 
-(defvar *default-entities* (list '("quot" . "\"") '("amp" . "&") '("apos" .  "'") '("lt" . "<") '("gt".  ">")
-                                 (cons "nbsp" (string #\No-Break-Space)) (cons "copy" (string (code-char 169)))))
+(defvar *default-entities* '(("quot" . "\"") '("amp" . "&") '("apos" .  "'") '("lt" . "<") '("gt".  ">")
+                             ("nbsp" . #.(string #\No-Break-Space)) ("copy" . #.(string (code-char 169)))))
 
-(defvar *self-closing-tags* (list "!DOCTYPE"))
+(defvar *self-closing-tags*  '("!DOCTYPE"))
 
 (defconstant +spaces+ '(#\Space #\Tab #\No-Break-Space #\Zero-Width-No-Break-Space #\Return #\Newline #\Null))
 
@@ -84,7 +84,7 @@
 (defun decode* (string)
   "Convert our STRING into an XML:NODE and children"
   (if (pathnamep string)
-      (decode* (config:slurp-string string))
+      (decode* (hcl:file-string string :external-format '(:utf-8 :eol-style :lf)))
       (let (*prologue* (*entities* *default-entities*))
         (values (parse (lex string)) *prologue* *entities*))))
 

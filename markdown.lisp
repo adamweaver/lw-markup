@@ -44,7 +44,7 @@
 (defun parse (source &key (indented-code t) (inline-links t))
   (let ((*indented-code-p* indented-code) (*inline-links-p* inline-links))
     (if (pathnamep source)
-        (parse (config:slurp-string source) :indented-code indented-code :inline-links inline-links)
+        (parse (hcl:file-string source :external-format '(:utf-8 :eol-style :lf)) :indented-code indented-code :inline-links inline-links)
         (let ((*source* (mapcar #'chomp (lw:split-sequence '(#\Linefeed #\Return) source :coalesce-separators t))))
           (parse*)))))
 

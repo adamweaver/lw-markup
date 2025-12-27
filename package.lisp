@@ -1,5 +1,5 @@
 (defpackage :css
-  (:use :cl)
+  (:use :cl :utils)
   (:export "PARSE" "INFLATE-XML-WITH-STYLES"))
 
 (defpackage :html
@@ -7,13 +7,24 @@
   (:export "ESC" "MAPCAT" "HTML" "XML"))
 
 (defpackage :markdown
-  (:use :cl)
+  (:use :cl :utils)
   (:export "PARSE" "MAKE-HTML" "HTML"))
 
 (defpackage :rtf
   (:use :cl))
 
 (defpackage :xml
-  (:use :cl)
-  (:export "NODE" "NODE-TAG" "NODE-ATTRS" "NODE-CONTENT" "HAS-ATTR" "HAS-ATTR-P" "UPSERT-ATTR" "DELETE-ATTR"
-           "XML-PARSE-ERROR" "PRINT-XML" "DECODE" "ENCODE"))
+  (:use :cl :utils)
+  (:export
+   "DECODE"
+   "DELETE-ATTR"
+   "ENCODE"
+   "HAS-ATTR"
+   "HAS-ATTR-P"
+   "NODE"
+   "NODE-ATTRS"
+   "NODE-CONTENT"
+   "NODE-TAG"
+   "PRINT-XML"
+   "UPSERT-ATTR"
+   "XML-PARSE-ERROR"))

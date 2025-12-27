@@ -18,19 +18,19 @@
       (destructuring-bind (&optional number format) (#~m/^(\d+)(\D*)$/ value)
         (let ((value (or (ignore-errors (hcl:parse-float number)) 0)))
           (case* #'string-equal (or format "pt")
-                 ("pt" value)   ;  a point is 1/72 of an inch
-                 ("pc" (* value 6/72))          ; a pica is 1/6 of an inch
-                 ("%" (* value (/ base 100)))
-                 (("vmin" "vw") (* value 595/100))
-                 (("vmax" "vh") (* value 842/100))
-                 ;; ("em" (* value (pdf:line-height (value "font-family")) (value "font-size")))
-                 ;; ("rem" (* value (pdf:line-height (cdr (assoc "font-family" *root* :test #'string-equal))
-                 ;;                                  (cdr (assoc "font-size" *root* :test #'string-equal)))))
-                 ("px" (* value 72/96))         ; https://www.w3.org/Style/Examples/007/units.en.html - 1px = 1/96 of an inch
-                 ("cm" (* value 1/72 254/100))
-                 ("mm" (* value 1/72 254/1000))
-                 ("in" (* value 1/72))
-                 (t value))))))                 ; points
+            ("pt" value)   ;  a point is 1/72 of an inch
+            ("pc" (* value 6/72))          ; a pica is 1/6 of an inch
+            ("%" (* value (/ base 100)))
+            (("vmin" "vw") (* value 595/100))
+            (("vmax" "vh") (* value 842/100))
+            ;; ("em" (* value (pdf:line-height (value "font-family")) (value "font-size")))
+            ;; ("rem" (* value (pdf:line-height (cdr (assoc "font-family" *root* :test #'string-equal))
+            ;;                                  (cdr (assoc "font-size" *root* :test #'string-equal)))))
+            ("px" (* value 72/96))         ; https://www.w3.org/Style/Examples/007/units.en.html - 1px = 1/96 of an inch
+            ("cm" (* value 1/72 254/100))
+            ("mm" (* value 1/72 254/1000))
+            ("in" (* value 1/72))
+            (t value))))))                 ; points
 
 ;;;============================================================================
 ;;; INFLATE XML
@@ -47,7 +47,7 @@
                (let* ((*ancestry* (cons x *ancestry*))
                       (rules (sort (remove-if-not #'%match-p *rules*) #'> :key #'rule-specificity))
                       (kids (xml:node-content x))
-                      (style (xml:has-attr x 'db::string "style"))
+                      (style (xml:has-attr x #'conv:string! "style"))
                       (styles (when style (parse style)))
                       (css (apply #'append styles (mapcar #'rule-styles rules))))
                  (xml:upsert-attr x "css" css)
@@ -68,7 +68,7 @@
                         t))
 
            (%classes-p (r x)
-             (let ((my-classes (xml:has-attr x 'db::string "class")))
+             (let ((my-classes (xml:has-attr x #'conv:string! "class")))
                (or (null (rule-classes r))
                    (null (set-difference (rule-classes r) (lw:split-sequence " " my-classes :test #'char=) :test #'string=)))))
 
@@ -248,25 +248,25 @@
 
       (loop for (attr . args) in alist
             do (case* #'string-equal attr
-                      ;; Do these unless we have a more specific attr set
-                      ("border" (maybe-update-borders (get-border-values args)))
-                      ("padding" (maybe-update-sides "padding" (get-box-values args)))
-                      ("margin" (maybe-update-sides "margin" (get-box-values args)))
+                 ;; Do these unless we have a more specific attr set
+                 ("border" (maybe-update-borders (get-border-values args)))
+                 ("padding" (maybe-update-sides "padding" (get-box-values args)))
+                 ("margin" (maybe-update-sides "margin" (get-box-values args)))
 
-                      ;; Always do these though
-                      ("border-top" (update-border "top" (get-border-values args)))
-                      ("border-right" (update-border "right" (get-border-values args)))
-                      ("border-bottom" (update-border "border" (get-border-values args)))
-                      ("border-left" (update-border "left" (get-border-values args)))
-                      ("margin-top" (update-single "margin-top" (car args)))
-                      ("margin-right" (update-single "margin-right" (car args)))
-                      ("margin-bottom" (update-single "margin-bottom" (car args)))
-                      ("margin-left" (update-single "margin-left" (car args)))
-                      ("padding-top" (update-single "padding-top" (car args)))
-                      ("padding-right" (update-single "padding-right" (car args)))
-                      ("padding-bottom" (update-single "padding-bottom" (car args)))
-                      ("padding-left" (update-single "padding-left" (car args)))
-                      (t (setf styles (acons attr (car args) styles)))))
+                 ;; Always do these though
+                 ("border-top" (update-border "top" (get-border-values args)))
+                 ("border-right" (update-border "right" (get-border-values args)))
+                 ("border-bottom" (update-border "border" (get-border-values args)))
+                 ("border-left" (update-border "left" (get-border-values args)))
+                 ("margin-top" (update-single "margin-top" (car args)))
+                 ("margin-right" (update-single "margin-right" (car args)))
+                 ("margin-bottom" (update-single "margin-bottom" (car args)))
+                 ("margin-left" (update-single "margin-left" (car args)))
+                 ("padding-top" (update-single "padding-top" (car args)))
+                 ("padding-right" (update-single "padding-right" (car args)))
+                 ("padding-bottom" (update-single "padding-bottom" (car args)))
+                 ("padding-left" (update-single "padding-left" (car args)))
+                 (t (setf styles (acons attr (car args) styles)))))
       styles)))
 
 (defparameter *css-tokens* nil)
